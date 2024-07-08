@@ -5,6 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+
+
 @SpringBootApplication
 public class EcommerceApplication {
 
@@ -12,10 +14,9 @@ public class EcommerceApplication {
 		SpringApplication.run(EcommerceApplication.class, args);
 	}
 
-
-    @Bean
-    ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
+	@Bean
+	ModelMapper modelMapper() {
+		return new ModelMapper();
+	}
 
 }

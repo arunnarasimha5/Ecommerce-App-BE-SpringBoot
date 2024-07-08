@@ -3,7 +3,7 @@ package com.example.ecommerce.model.enums;
 public enum ResponseMessages {
 	LOGINERROR("Invalid UserName/Password"), LOGINFAILED("Login Failed. Pls Try Again"),
 	SIGNUPFAILED("Sign Up Failed, Pls Try Again"), SIGNUPUSEREXISTS("Same UserID already exists"),
-	SIGNUPSUCCESS("Sign Up Success"), NOPRODUCTFOUND("No Product Details Found"),
+	SIGNUPSUCCESS("Sign Up Success, Please Sign In"), NOPRODUCTFOUND("No Product Details Found"),
 	LOGOUTSUCCESS("User Logout Successfully "), ADDCARTNOCREDIT("Not Enough Credit Available"),
 	ADDCARTPRESENTALREADY("The Product is already added in the cart"),
 	ADDTOCARTSUCCESS("Product has been successfully added to the Cart"),
