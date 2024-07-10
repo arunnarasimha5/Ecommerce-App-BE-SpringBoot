@@ -114,7 +114,8 @@ public class EcommerceAppApiController {
 		try {
 			String responseMsg = cartAdditonDeletionService.addToCartService(cartAdditonDeletionRequestDto);
 			if (responseMsg.equals(ResponseMessages.ADDTOCARTSUCCESS.getResponsesMessage())) {
-				return ResponseEntity.ok(responseMsg);
+				UserDetails currentLoginUserDetails = cartAdditonDeletionService.getCurrentLoginUserDetailsFromDb();
+				return ResponseEntity.ok(currentLoginUserDetails);
 			} else {
 				return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(responseMsg);
 
