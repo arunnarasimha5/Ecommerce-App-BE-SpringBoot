@@ -1,9 +1,9 @@
 package com.example.ecommerce.model.enums;
 
 public enum ResponseMessages {
-	LOGINERROR("Invalid UserName/Password"), LOGINFAILED("Login Failed. Pls Try Again"),
+	LOGINERROR("Invalid UserName/Password"), LOGINFAILED("Login Failed. Pls Try Again"),LOGINSUCCESS("User Successfully Login"),
 	SIGNUPFAILED("Sign Up Failed, Pls Try Again"), SIGNUPUSEREXISTS("Same UserID already exists"),
-	SIGNUPSUCCESS("Sign Up Success, Please Sign In"), NOPRODUCTFOUND("No Product Details Found"),
+	SIGNUPSUCCESS("Sign Up Success, Please Sign In"), NOPRODUCTFOUND("No Product Details Found"),PRODUCTFETCHSUCCESS("Category Based Products Fetch Success"),
 	LOGOUTSUCCESS("User Logout Successfully "), ADDCARTNOCREDIT("Not Enough Credit Available"),
 	ADDCARTPRESENTALREADY("The Product is already added in the cart"),
 	ADDTOCARTSUCCESS("Product has been successfully added to the Cart"),
@@ -11,7 +11,7 @@ public enum ResponseMessages {
 	DELETECARTFAILED("Deleting Product from cart Failed"), DELETECARTSUCCESS("Delete Product from cart Success"),
 	USERDATAFETCHFAILED("User Data Fetch Failed"), USERUPDATESUCCESS("User Data Updated Successfully"),
 	USERUPDATEPASSMISMATCH("Old Password is wrong !! Please Try Again"), USERUPDATEFAILED("User Update Failed"),
-	PRODUCTBUYSUCCESS("Product has beeen successfully purchased !!");
+	PRODUCTBUYSUCCESS("Product has beeen successfully purchased !!"), PRODUCTBUYFAILED("Product Buy Failed, Pls Try Again !");
 
 	private final String responseMessage;
 
