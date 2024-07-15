@@ -67,13 +67,13 @@ public class UserDataController {
 				UserDetails currentLoginUserDetails = cartAdditonDeletionService.getCurrentLoginUserDetailsFromDb();
 				if (currentLoginUserDetails != null) {
 					CommonResponse response = new CommonResponse(200,
-							ResponseMessages.LOGINSUCCESS.getResponsesMessage(), currentLoginUserDetails);
+							ResponseMessages.USERUPDATESUCCESS.getResponsesMessage(), currentLoginUserDetails);
 					return ResponseEntity.ok(response);
 				}
 			}
 
 			return createErrorResponse(HttpStatus.EXPECTATION_FAILED,
-					ResponseMessages.USERUPDATEFAILED.getResponsesMessage());
+					responseMsg);
 		}
 
 		catch (Exception e) {
