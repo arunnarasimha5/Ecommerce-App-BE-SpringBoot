@@ -53,7 +53,6 @@ public class UserDataController {
 			}
 
 		} catch (Exception e) {
-			System.out.println(e);
 			return createErrorResponse(HttpStatus.EXPECTATION_FAILED,
 					ResponseMessages.USERDATAFETCHFAILED.getResponsesMessage());
 		}
