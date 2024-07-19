@@ -39,6 +39,12 @@ Refer to the Frontend README [here](https://github.com/arunnarasimha5/Ecommerce-
 ### Initial Product Data
 * The initial product data is loaded from a JSON file located at src/main/resources/productDetails.json.
 
+### Topics Covered
+* Spring Boot: Core framework for building the backend application.
+* Spring Data JPA: For ORM and database interaction.
+* H2 Database: In-memory database for development and testing.
+* RESTful APIs: For interaction between frontend and backend.
+* Enums: For defining constant values.
 
 ### Usage Instructions
 1. Sign Up: Use the /signup API to create a new user account.
