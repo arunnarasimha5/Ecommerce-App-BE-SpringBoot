@@ -21,6 +21,9 @@ import com.example.ecommerce.model.enums.ResponseMessages;
 import com.example.ecommerce.service.CartAdditonDeletionService;
 import com.example.ecommerce.service.ProductInventoryService;
 import com.example.ecommerce.service.UserCartBuyService;
+import com.example.ecommerce.service.UserDetailsFetchService;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -35,8 +38,15 @@ public class ProductDataController {
 	@Autowired
 	UserCartBuyService userCartBuyService;
 
-	private UserDetails getCurrentUserData() {
-		return cartAdditonDeletionService.getCurrentLoginUserDetailsFromDb();
+	@Autowired
+	UserDetailsFetchService userDetailsFetchService;
+
+	private String getCurrentUserID(HttpSession session) {
+		return (String) session.getAttribute("UserID");
+	}
+
+	private UserDetails getCurrentUserData(String currentLoginUserID) {
+		return userDetailsFetchService.getCurrentLoginUserFromDB(currentLoginUserID);
 	}
 
 	private ResponseEntity<CommonResponse> createErrorResponse(HttpStatus status, String message) {
@@ -44,8 +54,9 @@ public class ProductDataController {
 		return ResponseEntity.status(status).body(response);
 	}
 
-	private ResponseEntity<CommonResponse> createErrorResponseForProductBuy(HttpStatus status, String message) {
-		CommonResponse response = new CommonResponse(status.value(), message, getCurrentUserData());
+	private ResponseEntity<CommonResponse> createErrorResponseForProductBuy(HttpStatus status, String message,
+			String currentLoginUserID) {
+		CommonResponse response = new CommonResponse(status.value(), message, getCurrentUserData(currentLoginUserID));
 		return ResponseEntity.status(status).body(response);
 	}
 
@@ -66,11 +77,13 @@ public class ProductDataController {
 
 	@PostMapping("/addtocart")
 	public ResponseEntity<CommonResponse> addToCart(
-			@RequestBody CartAdditonDeletionRequestDto cartAdditonDeletionRequestDto) {
+			@RequestBody CartAdditonDeletionRequestDto cartAdditonDeletionRequestDto, HttpSession session) {
 		try {
-			String responseMsg = cartAdditonDeletionService.addToCartService(cartAdditonDeletionRequestDto);
+			String currentLoginUserID = getCurrentUserID(session);
+			String responseMsg = cartAdditonDeletionService.addToCartService(cartAdditonDeletionRequestDto,
+					currentLoginUserID);
 			if (responseMsg.equals(ResponseMessages.ADDTOCARTSUCCESS.getResponsesMessage())) {
-				UserDetails currentLoginUserDetails = cartAdditonDeletionService.getCurrentLoginUserDetailsFromDb();
+				UserDetails currentLoginUserDetails = getCurrentUserData(currentLoginUserID);
 				CommonResponse commonResponse = new CommonResponse(200, responseMsg, currentLoginUserDetails);
 				return ResponseEntity.ok(commonResponse);
 			} else {
@@ -86,11 +99,13 @@ public class ProductDataController {
 
 	@PostMapping("/deletefromcart")
 	public ResponseEntity<CommonResponse> deleteFromCart(
-			@RequestBody CartAdditonDeletionRequestDto cartAdditonDeletionRequestDto) {
+			@RequestBody CartAdditonDeletionRequestDto cartAdditonDeletionRequestDto, HttpSession session) {
 		try {
-			String responseMsg = cartAdditonDeletionService.deleteFromCart(cartAdditonDeletionRequestDto);
+			String currentLoginUserID = getCurrentUserID(session);
+			String responseMsg = cartAdditonDeletionService.deleteFromCart(cartAdditonDeletionRequestDto,
+					currentLoginUserID);
 			if (responseMsg.equals(ResponseMessages.DELETECARTSUCCESS.getResponsesMessage())) {
-				UserDetails currentLoginUserDetails = cartAdditonDeletionService.getCurrentLoginUserDetailsFromDb();
+				UserDetails currentLoginUserDetails = getCurrentUserData(currentLoginUserID);
 				if (currentLoginUserDetails != null) {
 					CommonResponse commonResponse = new CommonResponse(200, responseMsg, currentLoginUserDetails);
 					return ResponseEntity.ok(commonResponse);
@@ -105,20 +120,22 @@ public class ProductDataController {
 	}
 
 	@GetMapping("/buycartproducts")
-	public ResponseEntity<CommonResponse> buyProductsInCart() {
+	public ResponseEntity<CommonResponse> buyProductsInCart(HttpSession session) {
+		String currentLoginUserID = getCurrentUserID(session);
 		try {
-			Boolean purchaseStatus = userCartBuyService.doBuyCartProducts();
+			Boolean purchaseStatus = userCartBuyService.doBuyCartProducts(currentLoginUserID);
 			if (purchaseStatus) {
 				CommonResponse commonResponse = new CommonResponse(200,
-						ResponseMessages.PRODUCTBUYSUCCESS.getResponsesMessage(), getCurrentUserData());
+						ResponseMessages.PRODUCTBUYSUCCESS.getResponsesMessage(),
+						getCurrentUserData(currentLoginUserID));
 				return ResponseEntity.ok(commonResponse);
 			} else {
 				return createErrorResponseForProductBuy(HttpStatus.EXPECTATION_FAILED,
-						ResponseMessages.PRODUCTBUYFAILED.getResponsesMessage());
+						ResponseMessages.PRODUCTBUYFAILED.getResponsesMessage(), currentLoginUserID);
 			}
 		} catch (Exception e) {
 			return createErrorResponseForProductBuy(HttpStatus.EXPECTATION_FAILED,
-					ResponseMessages.PRODUCTBUYFAILED.getResponsesMessage());
+					ResponseMessages.PRODUCTBUYFAILED.getResponsesMessage(), currentLoginUserID);
 		}
 	}
 

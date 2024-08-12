@@ -18,11 +18,7 @@ public class UserDataUpdationService {
 	@Autowired
 	private UserDetailsRepository userDetailsRepository;
 
-	@Autowired
-	HttpSession session;
-
-	public String doUserUpdation(UserDataUpdateRequestDto userDataUpdateRequestDto) {
-		String currentLoginUserID = (String) session.getAttribute("UserID");
+	public String doUserUpdation(UserDataUpdateRequestDto userDataUpdateRequestDto, String currentLoginUserID) {
 		UserDetails currentLoginUserDetails = userDetailsRepository.findByUserID(currentLoginUserID);
 		if (currentLoginUserDetails != null) {
 			Boolean isOldPasswordCorrect = currentLoginUserDetails.getPassword()

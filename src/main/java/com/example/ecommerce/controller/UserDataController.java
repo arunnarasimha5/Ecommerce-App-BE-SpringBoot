@@ -17,6 +17,9 @@ import com.example.ecommerce.model.UserDetails;
 import com.example.ecommerce.model.enums.ResponseMessages;
 import com.example.ecommerce.service.CartAdditonDeletionService;
 import com.example.ecommerce.service.UserDataUpdationService;
+import com.example.ecommerce.service.UserDetailsFetchService;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -27,9 +30,20 @@ public class UserDataController {
 
 	@Autowired
 	UserDataUpdationService userDataUpdationService;
-	
+
 	@Autowired
 	ModelMapper modelMapper;
+
+	@Autowired
+	UserDetailsFetchService userDetailsFetchService;
+
+	private String getCurrentUserID(HttpSession session) {
+		return (String) session.getAttribute("UserID");
+	}
+
+	private UserDetails getCurrentUserData(String currentLoginUserID) {
+		return userDetailsFetchService.getCurrentLoginUserFromDB(currentLoginUserID);
+	}
 
 	private ResponseEntity<CommonResponse> createErrorResponse(HttpStatus status, String message) {
 		CommonResponse response = new CommonResponse(status.value(), message);
@@ -37,10 +51,11 @@ public class UserDataController {
 	}
 
 	@GetMapping("/getcurrentuserdata")
-	public ResponseEntity<CommonResponse> getCurrentLoginUserData() {
+	public ResponseEntity<CommonResponse> getCurrentLoginUserData(HttpSession session) {
 		try {
-
-			LoginInResponseDto currentLoginUserDetails = modelMapper.map(cartAdditonDeletionService.getCurrentLoginUserDetailsFromDb(), LoginInResponseDto.class);
+			String currentLoginUserID = getCurrentUserID(session);
+			LoginInResponseDto currentLoginUserDetails = modelMapper.map(getCurrentUserData(currentLoginUserID),
+					LoginInResponseDto.class);
 			if (currentLoginUserDetails != null) {
 
 				CommonResponse response = new CommonResponse(200, ResponseMessages.LOGINSUCCESS.getResponsesMessage(),
@@ -60,11 +75,12 @@ public class UserDataController {
 
 	@PostMapping("/updateuserdata")
 	public ResponseEntity<CommonResponse> updateCurrentUserDetails(
-			@RequestBody UserDataUpdateRequestDto userDataUpdateRequestDto) {
+			@RequestBody UserDataUpdateRequestDto userDataUpdateRequestDto, HttpSession session) {
 		try {
-			String responseMsg = userDataUpdationService.doUserUpdation(userDataUpdateRequestDto);
+			String currentLoginUserID = getCurrentUserID(session);
+			String responseMsg = userDataUpdationService.doUserUpdation(userDataUpdateRequestDto, currentLoginUserID);
 			if (responseMsg.equals(ResponseMessages.USERUPDATESUCCESS.getResponsesMessage())) {
-				UserDetails currentLoginUserDetails = cartAdditonDeletionService.getCurrentLoginUserDetailsFromDb();
+				UserDetails currentLoginUserDetails = getCurrentUserData(currentLoginUserID);
 				if (currentLoginUserDetails != null) {
 					CommonResponse response = new CommonResponse(200,
 							ResponseMessages.USERUPDATESUCCESS.getResponsesMessage(), currentLoginUserDetails);
@@ -72,8 +88,7 @@ public class UserDataController {
 				}
 			}
 
-			return createErrorResponse(HttpStatus.EXPECTATION_FAILED,
-					responseMsg);
+			return createErrorResponse(HttpStatus.EXPECTATION_FAILED, responseMsg);
 		}
 
 		catch (Exception e) {

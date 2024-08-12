@@ -19,12 +19,8 @@ public class UserCartBuyService {
 	@Autowired
 	private UserDetailsRepository userDetailsRepository;
 
-	@Autowired
-	private HttpSession session;
-
-	public boolean doBuyCartProducts() {
+	public boolean doBuyCartProducts(String currentLoginUserID) {
 		Boolean isPurchaseCompleted = false;
-		String currentLoginUserID = (String) session.getAttribute("UserID");
 		UserDetails currentUserDetails = userDetailsRepository.findByUserID(currentLoginUserID);
 		if (currentUserDetails != null) {
 			List<UserCartDetails> userCartList = currentUserDetails.getCartDetails();

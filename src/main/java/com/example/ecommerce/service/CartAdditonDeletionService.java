@@ -24,18 +24,8 @@ public class CartAdditonDeletionService {
 	@Autowired
 	private ProductRepository productRepository;
 
-	@Autowired
-	private HttpSession session;
-
-
-
-	public UserDetails getCurrentLoginUserDetailsFromDb() {
-		String currentLoginUserID = (String) session.getAttribute("UserID");
-		return userDetailsRepository.findByUserID(currentLoginUserID);
-	}
-
-	public String addToCartService(CartAdditonDeletionRequestDto addToCartObject) {
-		UserDetails currentUserDetails = getCurrentLoginUserDetailsFromDb();
+	public String addToCartService(CartAdditonDeletionRequestDto addToCartObject, String currentLoginUserID) {
+		UserDetails currentUserDetails = userDetailsRepository.findByUserID(currentLoginUserID);
 		if (currentUserDetails != null) {
 			BigDecimal currentCreditAmount = currentUserDetails.getCredit();
 			BigDecimal totalAmountInCart = addToCartObject.getPrice()
@@ -73,8 +63,8 @@ public class CartAdditonDeletionService {
 
 	};
 
-	public String deleteFromCart(CartAdditonDeletionRequestDto deleteFromCartObject) {
-		UserDetails currentUserDetails = getCurrentLoginUserDetailsFromDb();
+	public String deleteFromCart(CartAdditonDeletionRequestDto deleteFromCartObject, String currentLoginUserID) {
+		UserDetails currentUserDetails = userDetailsRepository.findByUserID(currentLoginUserID);
 		if (currentUserDetails != null) {
 			currentUserDetails.getCartDetails()
 					.removeIf(product -> product.getProductId().equals(deleteFromCartObject.getProductId()));
