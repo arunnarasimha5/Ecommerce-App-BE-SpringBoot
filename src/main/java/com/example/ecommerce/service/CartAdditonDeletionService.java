@@ -13,7 +13,6 @@ import com.example.ecommerce.model.enums.ResponseMessages;
 import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.repository.UserDetailsRepository;
 
-import jakarta.servlet.http.HttpSession;
 
 @Service
 public class CartAdditonDeletionService {

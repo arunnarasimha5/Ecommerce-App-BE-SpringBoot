@@ -1,9 +1,11 @@
 package com.example.ecommerce.service;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.example.ecommerce.model.ProductInventoryDetails;
@@ -25,10 +27,11 @@ public class ProductDataLoadingService {
 	@PostConstruct
 	public void init() {
 		try {
-			List<ProductInventoryDetails> productInventoryDetails = objectMapper.readValue(
-					new File("src/main/resources/productDetails.json"), new TypeReference<List<ProductInventoryDetails>>() {
-					});
-			productRepository.saveAll(productInventoryDetails);
+			  ClassPathResource resource = new ClassPathResource("productDetails.json");
+		        InputStream inputStream = resource.getInputStream();
+		        List<ProductInventoryDetails> productInventoryDetails = objectMapper.readValue(
+		                inputStream, new TypeReference<List<ProductInventoryDetails>>() {});
+		        productRepository.saveAll(productInventoryDetails);
 
 		} catch (Exception e) {
 			System.out.println(e);
